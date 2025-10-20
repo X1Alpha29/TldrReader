@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:TldrMaui.Models"
+             xmlns:conv="clr-namespace:TldrMaui.Converters"
+             x:Class="TldrMaui.Views.FeedPage"
+             Title="TLDR Tech"
+             BackgroundColor="{AppThemeBinding Light={DynamicResource TLDR.BgLight}, Dark={DynamicResource TLDR.BgDark}}"
+             Padding="{OnPlatform iOS='0,12,0,0', Android='0', WinUI='12'}">
+
+    <!-- Page-scoped resources -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <conv:FeedKindEqualsConverter x:Key="FeedKindEquals" />
+            <conv:FeedKindToColorConverter x:Key="FeedKindToColor" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+
+        <!-- ===== CATEGORY BACKGROUNDS (glassy gradients) ===== -->
+        <Grid InputTransparent="True">
+            <!-- Tech -->
+            <Border IsVisible="{Binding IsTechSelected}">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1A2A4FDB" Offset="0"/>
+                        <GradientStop Color="#332A4FDB" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <!-- AI -->
+            <Border IsVisible="{Binding IsAISelected}">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1A8B5CF6" Offset="0"/>
+                        <GradientStop Color="#338B5CF6" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <!-- Design -->
+            <Border IsVisible="{Binding IsDesignSelected}">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1AEF4444" Offset="0"/>
+                        <GradientStop Color="#33EF4444" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+            <!-- Crypto -->
+            <Border IsVisible="{Binding IsCryptoSelected}">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#1A10B981" Offset="0"/>
+                        <GradientStop Color="#3310B981" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+        </Grid>
+
+        <!-- ===== FOREGROUND CONTENT ===== -->
+        <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+                 Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Groups}"
+                      IsGrouped="True"
+                      Margin="12"
+                      SelectionMode="None">
+
+                <!-- Header: logo + theme toggle + title + chips + indicator + status -->
+                <CollectionView.Header>
+                    <Grid Padding="8,8,8,12"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                ColumnDefinitions="*,Auto"
+                RowSpacing="6">
+
+                        <!-- Logo -->
+                        <VerticalStackLayout Grid.Row="0" Grid.ColumnSpan="2"
+                                 Spacing="6" HorizontalOptions="Center">
+                            <Image Source="tldrsquare.png"
+                     WidthRequest="36" HeightRequest="36" Aspect="AspectFit"
+                     Opacity="{AppThemeBinding Light=1, Dark=0.95}" />
+                        </VerticalStackLayout>
+
+                        <!-- Theme toggle -->
+                        <Button Grid.Row="0" Grid.Column="1"
+                    Text="☀︎/🌙"
+                    Padding="12,6"
+                    FontSize="14"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light={DynamicResource TLDR.MutedLight}, Dark={DynamicResource TLDR.MutedDark}}"
+                    Command="{Binding ToggleThemeCommand}"
+                    SemanticProperties.Hint="Toggle light or dark mode" />
+
+                        <!-- Divider -->
+                        <BoxView Grid.Row="1" Grid.ColumnSpan="2"
+                     HeightRequest="1" Opacity="0.08" HorizontalOptions="Fill"
+                     Color="{AppThemeBinding Light={DynamicResource TLDR.TextLight}, Dark={DynamicResource TLDR.TextDark}}" />
+
+                        <!-- BIG topic title (color-coded by category) -->
+                        <Label Grid.Row="2" Grid.ColumnSpan="2"
+                   Text="{Binding SelectedFeed}"
+                   FontAttributes="Bold"
+                   FontSize="24"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{Binding SelectedFeed, Converter={StaticResource FeedKindToColor}}"/>
+
+                        <!-- Chips -->
+                        <HorizontalStackLayout Grid.Row="3" Grid.ColumnSpan="2"
+                                   Spacing="8" HorizontalOptions="Center" Padding="0,4,0,0">
+                            <Border StrokeThickness="1" Padding="10,6" StrokeShape="RoundRectangle 12"
+                      Background="{AppThemeBinding Light={DynamicResource TLDR.ChipBgLight}, Dark={DynamicResource TLDR.ChipBgDark}}"
+                      Stroke="{AppThemeBinding Light={DynamicResource TLDR.BorderLight}, Dark={DynamicResource TLDR.BorderDark}}">
+                                <Label Text="Tech"
+                       TextColor="{AppThemeBinding Light={DynamicResource TLDR.TextLight}, Dark={DynamicResource TLDR.TextDark}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SelectFeedCommand}" CommandParameter="{x:Static models:FeedKind.Tech}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Border>
+
+                            <Border StrokeThickness="1" Padding="10,6" StrokeShape="RoundRectangle 12"
+                      Background="{AppThemeBinding Light={DynamicResource TLDR.ChipBgLight}, Dark={DynamicResource TLDR.ChipBgDark}}"
+                      Stroke="{AppThemeBinding Light={DynamicResource TLDR.BorderLight}, Dark={DynamicResource TLDR.BorderDark}}">
+                                <Label Text="AI"
+                       TextColor="{AppThemeBinding Light={DynamicResource TLDR.TextLight}, Dark={DynamicResource TLDR.TextDark}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SelectFeedCommand}" CommandParameter="{x:Static models:FeedKind.AI}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Border>
+
+                            <Border StrokeThickness="1" Padding="10,6" StrokeShape="RoundRectangle 12"
+                      Background="{AppThemeBinding Light={DynamicResource TLDR.ChipBgLight}, Dark={DynamicResource TLDR.ChipBgDark}}"
+                      Stroke="{AppThemeBinding Light={DynamicResource TLDR.BorderLight}, Dark={DynamicResource TLDR.BorderDark}}">
+                                <Label Text="Design"
+                       TextColor="{AppThemeBinding Light={DynamicResource TLDR.TextLight}, Dark={DynamicResource TLDR.TextDark}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SelectFeedCommand}" CommandParameter="{x:Static models:FeedKind.Design}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Border>
+
+                            <Border StrokeThickness="1" Padding="10,6" StrokeShape="RoundRectangle 12"
+                      Background="{AppThemeBinding Light={DynamicResource TLDR.ChipBgLight}, Dark={DynamicResource TLDR.ChipBgDark}}"
+                      Stroke="{AppThemeBinding Light={DynamicResource TLDR.BorderLight}, Dark={DynamicResource TLDR.BorderDark}}">
+                                <Label Text="Crypto"
+                       TextColor="{AppThemeBinding Light={DynamicResource TLDR.TextLight}, Dark={DynamicResource TLDR.TextDark}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding SelectFeedCommand}" CommandParameter="{x:Static models:FeedKind.Crypto}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Border>
+                        </HorizontalStackLayout>
+
+                        <!-- Selection indicator -->
+                        <Grid Grid.Row="4" Grid.ColumnSpan="2"
+                  ColumnDefinitions="*,*,*,*" Margin="6,0,6,0">
+                            <BoxView Grid.ColumnSpan="4" HeightRequest="2" Opacity="0.08" HorizontalOptions="Fill"
+                       Color="{AppThemeBinding Light={DynamicResource TLDR.TextLight}, Dark={DynamicResource TLDR.TextDark}}" />
+                            <BoxView Grid.Column="0" IsVisible="{Binding IsTechSelected}"   HeightRequest="3" HorizontalOptions="Fill" Color="{DynamicResource TLDR.Primary}" />
+                            <BoxView Grid.Column="1" IsVisible="{Binding IsAISelected}"     HeightRequest="3" HorizontalOptions="Fill" Color="{DynamicResource TLDR.Primary}" />
+                            <BoxView Grid.Column="2" IsVisible="{Binding IsDesignSelected}" HeightRequest="3" HorizontalOptions="Fill" Color="{DynamicResource TLDR.Primary}" />
+                            <BoxView Grid.Column="3" IsVisible="{Binding IsCryptoSelected}" HeightRequest="3" HorizontalOptions="Fill" Color="{DynamicResource TLDR.Primary}" />
+                        </Grid>
+
+                        <!-- Status banner -->
+                        <Border Grid.Row="5" Grid.ColumnSpan="2"
+                    Background="{AppThemeBinding Light={DynamicResource TLDR.ChipBgLight}, Dark={DynamicResource TLDR.ChipBgDark}}"
+                    StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="10,6"
+                    IsVisible="{Binding IsStatusVisible}">
+                            <Label Text="{Binding StatusMessage}" FontSize="12" HorizontalTextAlignment="Center"
+                     TextColor="{AppThemeBinding Light={DynamicResource TLDR.ChipTextLight}, Dark={DynamicResource TLDR.ChipTextDark}}" />
+                        </Border>
+                    </Grid>
+                </CollectionView.Header>
+
+                <!-- Day divider (group header) -->
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <Grid Padding="0,18,0,10">
+                            <Border StrokeThickness="0"
+                      Background="{AppThemeBinding Light={DynamicResource TLDR.ChipBgLight}, Dark={DynamicResource TLDR.ChipBgDark}}"
+                      StrokeShape="RoundRectangle 12">
+                                <!-- If your FeedGroup exposes Date (DateTime), bind to it with format.
+                     If it exposes Title (string), switch Text to {Binding Title}. -->
+                                <Label Text="{Binding Date, StringFormat='{0:dddd, dd MMM yyyy}'}"
+                       Margin="12,6"
+                       FontAttributes="Bold"
+                       FontSize="13"
+                       TextColor="{AppThemeBinding Light={DynamicResource TLDR.ChipTextLight}, Dark={DynamicResource TLDR.ChipTextDark}}" />
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+
+                <!-- Card template -->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Frame Padding="14"
+                     Margin="0,0,0,12"
+                     HasShadow="True"
+                     CornerRadius="18"
+                     BackgroundColor="{DynamicResource TLDR.CardSurface}"
+                     BorderColor="{AppThemeBinding Light={DynamicResource TLDR.BorderLight}, Dark={DynamicResource TLDR.BorderDark}}">
+
+                                <VerticalStackLayout Spacing="10">
+                                    <!-- Title (this must be the article title) -->
+                                    <Label Text="{Binding Title}"
+                                           FontAttributes="Bold"
+                                           FontSize="17"
+                                           MaxLines="3"
+                                           LineBreakMode="WordWrap"
+                                           TextColor="{DynamicResource TLDR.TextLight}"/>
+
+                                    <!-- Published date under title -->
+                                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                        <BoxView WidthRequest="6" HeightRequest="6" CornerRadius="3"
+                                                 VerticalOptions="Center"
+                                                 Color="{AppThemeBinding Light={DynamicResource TLDR.BorderLight}, Dark={DynamicResource TLDR.BorderDark}}" />
+                                        <Label Text="{Binding Published.LocalDateTime, StringFormat='{0:dd MMM yyyy}'}"
+                                               FontSize="12"
+                                               VerticalTextAlignment="Center"
+                                               TextColor="{DynamicResource TLDR.MutedLight}"/>
+                                    </HorizontalStackLayout>
+
+                                    <!-- Actions -->
+                                    <HorizontalStackLayout Padding="0,4,0,0" HorizontalOptions="Center" Spacing="8">
+                                        <Button Text="Open in Browser"
+                            Style="{DynamicResource BtnPrimary}"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.OpenCommand}"
+                            CommandParameter="{Binding}" />
+                                        <Button Text="Share"
+                            Style="{DynamicResource BtnSecondary}"
+                            Clicked="OnShareClicked"
+                            CommandParameter="{Binding}" />
+                                        <Button Text="Copy link"
+                            Style="{DynamicResource BtnTertiary}"
+                            Clicked="OnCopyLinkClicked"
+                            CommandParameter="{Binding}" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

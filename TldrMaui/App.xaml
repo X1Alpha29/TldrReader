@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TldrMaui"
+             xmlns:conv="clr-namespace:TldrMaui.Converters"
+             x:Class="TldrMaui.App">
+
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- Merge external dictionaries (if you use them) -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- TLDR-ish palette (light/dark) -->
+            <Color x:Key="TLDR.Primary">#2A4FDB</Color>
+
+            <Color x:Key="TLDR.BgLight">#F6F8FB</Color>
+            <Color x:Key="TLDR.BgDark">#0D0E10</Color>
+
+            <!-- Card surfaces -->
+            <Color x:Key="TLDR.CardLight">#FFFFFF</Color>
+            <Color x:Key="TLDR.CardDark">#17181B</Color>
+
+            <!-- NEW: card surface that stays light in both themes -->
+            <Color x:Key="TLDR.CardSurface">#FFFFFF</Color>
+
+            <Color x:Key="TLDR.BorderLight">#E7ECF5</Color>
+            <Color x:Key="TLDR.BorderDark">#2A2C31</Color>
+
+            <Color x:Key="TLDR.TextLight">#101318</Color>
+            <Color x:Key="TLDR.TextDark">#FFFFFF</Color>
+
+            <Color x:Key="TLDR.MutedLight">#5E6B85</Color>
+            <Color x:Key="TLDR.MutedDark">#99A3B8</Color>
+
+            <Color x:Key="TLDR.ChipBgLight">#EAF0FF</Color>
+            <Color x:Key="TLDR.ChipBgDark">#171923</Color>
+            <Color x:Key="TLDR.ChipTextLight">#2442A3</Color>
+            <Color x:Key="TLDR.ChipTextDark">#C9D4FF</Color>
+
+            <!-- Button styles -->
+            <Style x:Key="BtnBase" TargetType="Button">
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Padding" Value="18,10"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="MinimumHeightRequest" Value="42"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+            </Style>
+
+            <!-- Primary (blue) -->
+            <Style x:Key="BtnPrimary" TargetType="Button" BasedOn="{StaticResource BtnBase}">
+                <Setter Property="BackgroundColor" Value="{DynamicResource TLDR.Primary}"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="BorderWidth" Value="0"/>
+            </Style>
+
+            <!-- Secondary: stronger neutral in dark mode -->
+            <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource BtnBase}">
+                <Setter Property="BackgroundColor"
+                Value="{AppThemeBinding Light=#17181B, Dark=#2C2F36}"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="BorderWidth" Value="0"/>
+            </Style>
+
+            <!-- Tertiary: dark text + stronger outline on white cards (both themes) -->
+            <Style x:Key="BtnTertiary" TargetType="Button" BasedOn="{StaticResource BtnBase}">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <!-- Always dark text on white card -->
+                <Setter Property="TextColor" Value="{DynamicResource TLDR.TextLight}"/>
+                <!-- Medium outline that reads on white in both themes -->
+                <Setter Property="BorderColor" Value="#667189"/>
+                <Setter Property="BorderWidth" Value="1"/>
+            </Style>
+
+
+            <!-- Converters -->
+            <conv:FeedKindEqualsConverter x:Key="FeedKindEquals" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
